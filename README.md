@@ -1,9 +1,12 @@
-# 🌍 DevRadar (Hackathon Project)
+# 🌍 DevRadar - Real-time Developer Map
 
-A real-time map that shows developers around the world.
-Built with **React + Supabase + Google Maps API**.
+A real-time map application that shows developers around the world. Built with **React + Supabase + Google Maps API**.
 
----
+## 📸 Screenshots
+
+![DevRadar Map View](src/assets/Image%207-31-25%20at%204.02%20PM.JPG)
+
+*Real-time developer locations with heatmap visualization*
 
 ## 🚀 Features
 
