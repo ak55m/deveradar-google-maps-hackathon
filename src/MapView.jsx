@@ -1,4 +1,4 @@
-import { GoogleMap, Marker, useJsApiLoader, HeatmapLayer, InfoWindow } from "@react-google-maps/api";
+import { GoogleMap, Marker, useJsApiLoader, HeatmapLayer } from "@react-google-maps/api";
 import { useEffect, useState, useMemo } from "react";
 import { getDevelopers, subscribeToDevelopers } from "./supabaseHelpers";
 import { supabase } from "./supabaseClient";
@@ -11,6 +11,7 @@ export default function MapView() {
   const [mapError, setMapError] = useState(null);
   const [hoveredDeveloper, setHoveredDeveloper] = useState(null);
   const [isReloading, setIsReloading] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   // 🔑 Get API key from environment variable or use placeholder
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "YOUR_GOOGLE_MAPS_API_KEY";
@@ -320,6 +321,7 @@ export default function MapView() {
                 onMouseOver={(e) => {
                   console.log("Marker hovered:", dev.name);
                   setHoveredDeveloper(dev);
+                  setMousePosition({ x: e.domEvent.clientX, y: e.domEvent.clientY });
                 }}
                 onMouseOut={() => {
                   console.log("Marker unhovered:", dev.name);
@@ -341,32 +343,41 @@ export default function MapView() {
           
           {/* InfoWindow for hover details */}
           {hoveredDeveloper && (
-            <InfoWindow
-              position={{ 
-                lat: hoveredDeveloper.latitude, 
-                lng: hoveredDeveloper.longitude 
+            <div
+              style={{
+                position: "fixed",
+                top: `${mousePosition.y - 10}px`,
+                left: `${mousePosition.x + 10}px`,
+                background: "rgba(0,0,0,0.9)",
+                color: "white",
+                padding: "12px 16px",
+                borderRadius: "8px",
+                border: "1px solid rgba(255,255,255,0.2)",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+                zIndex: 10000,
+                maxWidth: "250px",
+                pointerEvents: "none",
+                backdropFilter: "blur(10px)",
+                transform: "translateY(-100%)"
               }}
-              onCloseClick={() => setHoveredDeveloper(null)}
             >
-              <div style={{ padding: "8px", maxWidth: "200px" }}>
-                <div style={{ fontWeight: "600", marginBottom: "4px", color: "#00ff88" }}>
-                  {hoveredDeveloper.name}
-                </div>
-                {hoveredDeveloper.skills && hoveredDeveloper.skills.length > 0 && (
-                  <div style={{ fontSize: "0.8rem", color: "#666", marginBottom: "4px" }}>
-                    <strong>Skills:</strong> {hoveredDeveloper.skills.join(", ")}
-                  </div>
-                )}
-                {hoveredDeveloper.communication && (
-                  <div style={{ fontSize: "0.8rem", color: "#00ccff", marginBottom: "4px" }}>
-                    <strong>Contact:</strong> {hoveredDeveloper.communication}
-                  </div>
-                )}
-                <div style={{ fontSize: "0.7rem", color: "#999" }}>
-                  📍 {hoveredDeveloper.latitude.toFixed(4)}, {hoveredDeveloper.longitude.toFixed(4)}
-                </div>
+              <div style={{ fontWeight: "600", marginBottom: "4px", color: "#00ff88" }}>
+                {hoveredDeveloper.name}
               </div>
-            </InfoWindow>
+              {hoveredDeveloper.skills && hoveredDeveloper.skills.length > 0 && (
+                <div style={{ fontSize: "0.8rem", color: "#ccc", marginBottom: "4px" }}>
+                  <strong>Skills:</strong> {hoveredDeveloper.skills.join(", ")}
+                </div>
+              )}
+              {hoveredDeveloper.communication && (
+                <div style={{ fontSize: "0.8rem", color: "#00ccff", marginBottom: "4px" }}>
+                  <strong>Contact:</strong> {hoveredDeveloper.communication}
+                </div>
+              )}
+              <div style={{ fontSize: "0.7rem", color: "#999" }}>
+                📍 {hoveredDeveloper.latitude.toFixed(4)}, {hoveredDeveloper.longitude.toFixed(4)}
+              </div>
+            </div>
           )}
         </GoogleMap>
         
