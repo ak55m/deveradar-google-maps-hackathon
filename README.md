@@ -4,7 +4,7 @@ A real-time map application that shows developers around the world. Built with *
 
 ## 📸 Screenshots
 
-![DevRadar Map View](src/assets/Image%207-31-25%20at%204.02%20PM.JPG)
+![DevRadar Map View](screenshot.png)
 
 *Real-time developer locations with heatmap visualization*
 
